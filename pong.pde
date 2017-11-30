@@ -1,30 +1,39 @@
 import processing.serial.*;
-
+//GLOBAL VARIABLES
 Serial my_port;
 char val = '4';
 
 int num_val;
 
-//player x and y coordinates
-int player_x = 10;
-int player_y = 20;
+int player_x;
+int player_y;
+int ball_x;
+int ball_y;
+int player_collider;
+int x_movement;
+int y_movement;
+int score;
+void setup(){
+  //setup / reset variables
+  //player x and y coordinates
+   player_x = 10;
+   player_y = 20;
 
 //ball x and y coordinates
-int ball_x = 100;
+   ball_x = 100;
 //int ball_y = 20;
-int ball_y = 120;
+   ball_y = 120;
 
-int player_collider = player_x + 65;
+   player_collider = player_x + 65;
 
-//testing
-int x_movement = 10;
+//ball x and y movement
+   x_movement = 10;
 
-int y_movement = 10;
+   y_movement = 10;
 
+//setup/reset score
+   score = 0;
 
-int score = 0;
-
-void setup(){
   size(800,500);
   background(0,0,0);
   noStroke();
@@ -38,26 +47,30 @@ void setup(){
 
 
 void draw(){
-  //testing rect
-  //rect(x,y,60,120);
  background(0,0,0);
  rect(player_x, player_y, 50, 100);
  
  ellipse(ball_x,ball_y,30,30);
- //x 750
- //y 475
+
   if (my_port.available() > 0)
   {
    val = my_port.readChar();
   }
   
   pot_check();
+  movement_collision();
+ 
 
+//end of main function
+}
+  
+  
+void movement_collision(){
   
   ball_x = ball_x  + x_movement;
   ball_y = ball_y + y_movement;
   
-  //bouncing off x edges
+  //bouncing off right x edge
   if (ball_x  >= 775){
     x_movement = -10;     
   }
@@ -74,7 +87,7 @@ void draw(){
 //player_collider = 75 in left bound testing
 
 //player and ball collision
-
+//checks if ball_x is on the right side of paddle and if ball_y is on the up and down range of player paddle
 if (ball_x <= player_collider && (ball_y >= player_y && ball_y <= player_y + 100)){
    x_movement = 10; 
    score ++;
@@ -83,23 +96,19 @@ if (ball_x <= player_collider && (ball_y >= player_y && ball_y <= player_y + 100
   //if paddle and ball dont hit 
   //GAME OVER BRANCH
 else if (ball_x <= 0){
- 
+  
   textSize(100);
   text("gameOver", 10, 200); 
-  delay(1000);
-  //text(score,10,260);
-  
+  text(score,10,360);
+  delay(3000);
+  setup();
  
-  //delay(000);
+  
   //score = 0;
   }
-
-//score ++;
-//end of main function
-  }
-  
-  
-  
+   
+  //end of movement and collision function
+}
  
   
 void pot_check(){
